@@ -173,11 +173,18 @@ class Ps_Sharebuttons extends Module implements WidgetInterface
 
     public function getWidgetVariables($hookName, array $params)
     {
-        if (!method_exists($this->context->controller, 'getProduct')) {
+        if (isset($params['product'])) {
+            $product = new Product(
+                $params['product']['id'],
+                false,
+                Context::getContext()->language->id,
+                Context::getContext()->shop->id
+            );
+        } elseif (method_exists($this->context->controller, 'getProduct')) {
+            $product = $this->context->controller->getProduct();
+        } else {
             return;
         }
-
-        $product = $this->context->controller->getProduct();
 
         if (!Validate::isLoadedObject($product)) {
             return;
